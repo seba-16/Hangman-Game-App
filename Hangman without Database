@@ -1,0 +1,49 @@
+from tkinter import *
+from string import ascii_lowercase
+from tkinter import messagebox
+import random
+game=Tk()
+game.title("Hangman")
+
+
+word_list= ["salade","primer","secure","safety","sailor","sacred"]
+
+def newGame():
+    global the_word_withSpaces
+    global numberofGuesses
+    numberofGuesses = 0
+    the_word=random.choice(word_list)
+    the_word_withSpaces=" ".join(the_word)
+    lblWord.set(" ".join("_"*len(the_word)))
+
+
+def guess(letter):
+    global numberofGuesses
+    if numberofGuesses < 7:
+        txt = list(the_word_withSpaces)
+        guessed = list(lblWord.get())
+        if the_word_withSpaces.count(letter) > 0:
+            for c in range(len(txt)):
+                if txt[c] == letter:
+                    guessed[c] = letter
+                lblWord.set("".join(guessed))
+                if lblWord.get() == the_word_withSpaces:
+                    messagebox.showinfo("Hangman", "You Guessed it! You Win")
+        else:
+            numberofGuesses += 1
+            if numberofGuesses == 7:
+                messagebox.showwarning("Hangman", "Game Over")
+
+
+lblWord = StringVar()
+Label(game, textvariable=lblWord, font=("Consolas 24 bold")).grid(row=0, column=3, columnspan=6, pady=80,
+                                                                                padx=70)
+n = 0
+for c in ascii_lowercase:
+    Button(game, text=c, command=lambda c=c: guess(c), font=("Helvetica 18"), width=4).grid(
+                row=1 + n // 9, column=n % 9)
+    n += 1
+
+
+newGame()
+game.mainloop()
